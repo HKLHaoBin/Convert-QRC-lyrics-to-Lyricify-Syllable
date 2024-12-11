@@ -1,4 +1,6 @@
 import re
+from github import Github
+import os
 
 def process_line_fixed(line):
     # 替换首个 [xxxx,yyyy] 为 [0] 或 [6]
@@ -29,23 +31,37 @@ def process_line_fixed(line):
 
     return line.strip()
 
-# 示例输入文本
-input_text = """
-"""
+def process_lyrics(input_text):
+    lines = input_text.strip().split('\n')
+    processed_lines = [process_line_fixed(line) for line in lines]
+    result = '\n'.join(processed_lines)
 
-# 将输入文本按行分割
-lines = input_text.strip().split('\n')
+    # 检查并修正行中是否存在 “](”，若存在则改为“]”
+    result = result.replace('](', ']')
 
-# 使用修正逻辑处理每一行
-processed_lines_fixed = [process_line_fixed(line) for line in lines]
+    # 检查并修正行中是否存在两个空格，若存在则改为一个空格
+    result = re.sub(r'  +', ' ', result)
 
-# 将处理后的行合并为单个字符串
-result_fixed = '\n'.join(processed_lines_fixed)
+    return result
 
-# 检查并修正行中是否存在 “](”，若存在则改为“]”
-result_fixed = result_fixed.replace('](', ']')
+def main():
+    # 从环境变量中获取 GitHub 相关信息
+    token = os.getenv('GITHUB_TOKEN')
+    issue_number = int(os.getenv('ISSUE_NUMBER'))
+    repository_name = os.getenv('GITHUB_REPOSITORY')
 
-# 检查并修正行中是否存在两个空格，若存在则改为一个空格
-result_fixed = re.sub(r'  +', ' ', result_fixed)
+    g = Github(token)
+    repo = g.get_repo(repository_name)
+    issue = repo.get_issue(number=issue_number)
 
-print(result_fixed)
+    # 获取 Issue 内容
+    input_text = issue.body or ""
+
+    # 处理歌词
+    processed_text = process_lyrics(input_text)
+
+    # 添加评论
+    issue.create_comment(f"Processed Lyrics:\n\n```\n{processed_text}\n```")
+
+if __name__ == "__main__":
+    main()
