@@ -42,6 +42,9 @@ def process_lyrics(input_text):
     # 检查并修正行中是否存在两个空格，若存在则改为一个空格
     result = re.sub(r'  +', ' ', result)
 
+    # 检查并修正行中是否存在 "str+)", 并确保只处理非数字的部分，若存在则将 ")" 去掉
+    result = re.sub(r'\b(?!\d+\))\w+\)', lambda m: m.group(0)[:-1], result)
+
     return result
 
 def main():
