@@ -6,6 +6,7 @@
 ## 项目简介
 Convert QRC lyrics to Lyricify Syllable. 是一个工具，用于从 GitHub Issue 中获取歌词内容，自动修正和格式化文本中的括号、时间戳以及其他潜在问题，然后将处理后的结果以评论的形式附加到该 Issue 中。该工具通过 Python 实现，依赖于 GitHub API 和正则表达式技术，能够高效、智能地完成歌词内容的清理工作。
 
+# [点击这里使用本工具](https://github.com/HKLHaoBin/Convert-QRC-lyrics-to-Lyricify-Syllable/issues/new/choose)
 ---
 
 ## 功能特点
